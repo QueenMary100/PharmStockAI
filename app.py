@@ -24,8 +24,8 @@ st.markdown("""
 @st.cache_resource
 def load_assets():
     # Updated path to load the new optimized model
-    model_path = "/content/drive/MyDrive/ENGAGEMary_Diana/Engage_Pharm_Data/models/pharm_rf_model_opt.pkl"
-    data_path = "/content/drive/MyDrive/ENGAGEMary_Diana/Engage_Pharm_Data/models/streamlit_pharm_data.csv"
+    model_path = "pharm_rf_model_opt.pkl"
+    data_path = "streamlit_pharm_data.csv"
     model = joblib.load(model_path)
     data = pd.read_csv(data_path)
     data['period_start'] = pd.to_datetime(data['period_start'])
@@ -102,5 +102,5 @@ else:
 
 # Backup to Drive
 import shutil
-drive_path = "/content/drive/MyDrive/ENGAGEMary_Diana/Engage_Pharm_Data/models/app.py"
+drive_path = "app.py"
 shutil.copy("app.py", drive_path)
