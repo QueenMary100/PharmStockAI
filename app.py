@@ -64,7 +64,7 @@ if page == "Executive Overview":
         st.bar_chart(top)
 
 else:
-    st.title("🔮 AI Forecasting Engine")
+    st.title("🔮 PharmStock System Forecasting Engine")
     st.write("Generate demand projections for individual SKUs.")
 
     with st.container():
@@ -100,7 +100,3 @@ else:
             </div>
         """, unsafe_allow_html=True)
 
-# Backup to Drive
-import shutil
-drive_path = "app.py"
-shutil.copy("app.py", drive_path)
