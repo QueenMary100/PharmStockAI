@@ -25,8 +25,8 @@ st.markdown("""
 # Load assets
 @st.cache_resource
 def load_assets():
-    model_path = "/content/drive/MyDrive/ENGAGEMary_Diana/Engage_Pharm_Data/models/pharm_rf_model_opt.pkl"
-    data_path = "/content/drive/MyDrive/ENGAGEMary_Diana/Engage_Pharm_Data/models/streamlit_pharm_data.csv"
+    model_path = "pharm_rf_model_opt.pkl"
+    data_path = "streamlit_pharm_data.csv"
 
     # Fallback paths for sandbox environments
     if not os.path.exists(model_path):
@@ -117,7 +117,7 @@ elif page == "Smart Sales Forecast":
 
 elif page == "Pharmacy Stock KPI Dashboard":
     # Generate target metric datasets dynamically (mapping top 10 values safely)
-    raw_pharm_path = "/content/drive/MyDrive/ENGAGEMary_Diana/Engage_Pharm_Data/pharm_stock_dataset_v2_15_Sep_26.csv"
+    raw_pharm_path = "pharm_stock_dataset_v2_15_Sep_26.csv"
     if os.path.exists(raw_pharm_path):
         raw_df = pd.read_csv(raw_pharm_path)
         raw_df['op_stock'] = raw_df['op_stock'].clip(lower=0)
@@ -295,10 +295,10 @@ elif page == "Pharmacy Stock KPI Dashboard":
 
     components.html(final_html, height=1050, scrolling=True)
 
-# Safe Copy Backup Execution
-try:
-    drive_dir = "/content/drive/MyDrive/ENGAGEMary_Diana/Engage_Pharm_Data/models/"
-    if os.path.exists(drive_dir):
-        shutil.copy("app.py", os.path.join(drive_dir, "app.py"))
-except Exception as e:
-    pass
+# # Safe Copy Backup Execution
+# try:
+#     drive_dir = "/content/drive/MyDrive/ENGAGEMary_Diana/Engage_Pharm_Data/models/"
+#     if os.path.exists(drive_dir):
+#         shutil.copy("app.py", os.path.join(drive_dir, "app.py"))
+# except Exception as e:
+#     pass
