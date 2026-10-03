@@ -22,15 +22,20 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Initialize Supabase Client
-SUPABASE_URL = st.secrets.get("SUPABASE_URL", "YOUR_SUPABASE_URL")
-SUPABASE_KEY = st.secrets.get("SUPABASE_KEY", "YOUR_SUPABASE_ANON_KEY")
+# Initialize Supabase Client from Streamlit Secrets
+try:
+    SUPABASE_URL = st.secrets["SUPABASE_URL"]
+    SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+except KeyError:
+    st.error("❌ Supabase credentials not found in secrets. Please configure them in Streamlit Cloud settings.")
+    st.stop()
 
 @st.cache_resource
 def init_supabase():
     try:
         return create_client(SUPABASE_URL, SUPABASE_KEY)
-    except Exception:
+    except Exception as e:
+        st.error(f"Failed to initialize Supabase: {e}")
         return None
 
 supabase_client = init_supabase()
@@ -64,7 +69,7 @@ if not st.session_state["user_session"]:
                     st.success("Successfully signed in!")
                     st.rerun()
                 except Exception as e:
-                    st.error(f"Login failed: {e}")
+                    st.error(f"Login failed: {str(e)}")
 
     with auth_tab2:
         st.subheader("Create a New Account")
@@ -82,7 +87,7 @@ if not st.session_state["user_session"]:
                     })
                     st.success("Account created successfully! Please check your email for confirmation if required, then sign in.")
                 except Exception as e:
-                    st.error(f"Sign up failed: {e}")
+                    st.error(f"Sign up failed: {str(e)}")
     st.stop()
 
 # Load assets
@@ -92,10 +97,8 @@ def load_assets():
     data_path = "streamlit_pharm_data.csv"
 
     if not os.path.exists(model_path):
-        st.warning(f"Model file not found at {model_path}")
         return None, None
     if not os.path.exists(data_path):
-        st.warning(f"Data file not found at {data_path}")
         return None, None
 
     try:
@@ -110,15 +113,15 @@ def load_assets():
 model, df = load_assets()
 
 if model is None or df is None:
-    st.error("System assets not found. Please ensure the following files exist in the directory:")
-    st.error("- pharm_rf_model_opt.pkl")
-    st.error("- streamlit_pharm_data.csv")
+    st.error("⚠️ System assets not found. Please ensure these files are in the repository:")
+    st.error("📦 - pharm_rf_model_opt.pkl")
+    st.error("📋 - streamlit_pharm_data.csv")
     st.stop()
 
 # Sidebar Navigation & Logout
 st.sidebar.title("🛡️ PharmStock")
 st.sidebar.write(f"Logged in as: **{st.session_state['user_session'].email}**")
-if st.sidebar.button("Log Out"):
+if st.sidebar.button("🚪 Log Out"):
     st.session_state["user_session"] = None
     st.rerun()
 
@@ -131,7 +134,7 @@ if page == "Executive Overview":
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Total Unique SKUs", f"{len(df['item'].unique()):,}")
     c2.metric("Average Monthly Demand", f"{df['sales_qty'].mean():.2f} Units")
-    c3.metric("System Health", "Active", delta="Optimal")
+    c3.metric("System Health", "✅ Active", delta="Optimal")
     c4.metric("Operating Centers", len(df['location'].unique()))
 
     col_left, col_right = st.columns([2, 1])
@@ -157,15 +160,16 @@ elif page == "Smart Sales Forecast":
     with st.container():
         col1, col2 = st.columns(2)
         with col1:
-            loc = st.selectbox("Operation Center", df['location'].unique())
-            item = st.selectbox("Product ID / Item Name", df[df['location'] == loc]['item'].unique())
+            loc = st.selectbox("Operation Center", sorted(df['location'].unique()))
+            filtered_items = sorted(df[df['location'] == loc]['item'].unique())
+            item = st.selectbox("Product ID / Item Name", filtered_items)
             target_date = st.date_input("Forecast Target Period", datetime(2026, 9, 1))
 
         with col2:
             item_data = df[(df['item'] == item) & (df['location'] == loc)].sort_values('period_start')
             last_val = item_data['sales_qty'].iloc[-1] if not item_data.empty else 0.0
-            l1 = st.number_input("Previous Month Demand (Qty)", value=float(last_val))
-            roll = st.number_input("Rolling 3-Month Mean Quantity", value=float(last_val))
+            l1 = st.number_input("Previous Month Demand (Qty)", value=float(last_val), min_value=0.0)
+            roll = st.number_input("Rolling 3-Month Mean Quantity", value=float(last_val), min_value=0.0)
 
     if st.button("Run Enterprise Projection"):
         features = np.array([[
@@ -179,8 +183,9 @@ elif page == "Smart Sales Forecast":
 
         st.markdown(f"""
             <div style='background-color: white; padding: 30px; border-radius: 12px; border-left: 10px solid #0284c7; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);'>
-                <h3 style='margin:0; color:#0284c7;'>System Prediction: {pred:.2f} Units</h3>
+                <h3 style='margin:0; color:#0284c7;'>📊 System Prediction: {pred:.2f} Units</h3>
                 <p style='color:#64748b; margin: 5px 0 0 0;'>Calculated demand projection for {target_date.strftime('%B %Y')}</p>
+                <p style='color:#10b981; margin: 10px 0 0 0; font-size: 0.9rem;'>✓ Forecast generated successfully</p>
             </div>
         """, unsafe_allow_html=True)
 
@@ -236,7 +241,7 @@ elif page == "Pharmacy Stock KPI Dashboard":
             .canvas-wrapper { position: relative; flex-grow: 1; min-height: 0; width: 100%; }
             .table-container { grid-column: span 4; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow-x: auto; }
             table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-            th { text-align: left; background: #f8f9fa; padding: 12px; border-bottom: 2px solid #eee; }
+            th { text-align: left; background: #f8f9fa; padding: 12px; border-bottom: 2px solid #eee; font-weight: 600; }
             td { padding: 12px; border-bottom: 1px solid #eee; }
             tr:hover { background-color: #f1f1f1; }
         </style>
