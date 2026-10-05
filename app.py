@@ -226,7 +226,7 @@ def render_landing_page():
                     Secure your medical supply chain. Our machine learning inference engine analyzes daily demand and supplier lead times to prevent critical shortages before they happen.
                 </div>
                 <div class="landing-actions">
-                    <button class="action-btn primary" type="button" onclick="window.location.reload();">Launch Afya-Stock AI →</button>
+                    <button class="action-btn primary" type="button" onclick="document.querySelector('[data-testid=\\'stButton\\']:has-text(\\'Launch Afya-Stock AI\\')').click();">Launch Afya-Stock AI →</button>
                     <button class="action-btn secondary" type="button" onclick="alert('API docs coming soon.')">View API Documentation</button>
                 </div>
             </div>
@@ -278,7 +278,8 @@ def render_landing_page():
         unsafe_allow_html=True,
     )
 
-    if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", use_container_width=True):
+    # Hidden button to handle launch action
+    if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", label_visibility="collapsed"):
         st.session_state["current_view"] = "auth"
         st.session_state["auth_mode"] = "signup"
         st.rerun()
@@ -368,7 +369,7 @@ def render_auth_page():
 
         if st.session_state["auth_mode"] == "signup":
             st.markdown(
-                "<div class='auth-footer'>Already have an account? <a href='#' onclick=\"document.querySelector('[data-testid=\\'stButton\\']')\" style='cursor:pointer'>Sign In</a></div>",
+                "<div class='auth-footer'>Already have an account?</div>",
                 unsafe_allow_html=True,
             )
             if st.button("Sign In", key="switch_signin_btn", use_container_width=True):
@@ -376,7 +377,7 @@ def render_auth_page():
                 st.rerun()
         else:
             st.markdown(
-                "<div class='auth-footer'>Need an account? <a href='#'>Create One</a></div>",
+                "<div class='auth-footer'>Need an account?</div>",
                 unsafe_allow_html=True,
             )
             if st.button("Create Account", key="switch_signup_btn", use_container_width=True):
