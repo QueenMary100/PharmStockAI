@@ -200,8 +200,8 @@ def copy_text(text: str):
         unsafe_allow_html=True,
     )
 
-
 def render_landing_page():
+    # 1. Hero Section & Title
     st.markdown(
         """
         <div class="landing-wrap">
@@ -211,88 +211,288 @@ def render_landing_page():
                 <div class="landing-subtext">
                     Secure your medical supply chain. Our machine learning inference engine analyzes daily demand and supplier lead times to prevent critical shortages before they happen.
                 </div>
-                <div class="landing-actions">
         """,
         unsafe_allow_html=True,
     )
 
+    # 2. Native Streamlit Action Buttons
     col1, col2, col3 = st.columns([1, 2.2, 1])
     with col2:
-        # Create two buttons side by side with styled divs
-        st.markdown(
-            """
-            <div style="display: flex; gap: 22px; justify-content: center; flex-wrap: wrap;">
-            """,
-            unsafe_allow_html=True,
-        )
-        
         col_btn1, col_btn2 = st.columns(2)
         with col_btn1:
             if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", use_container_width=True):
                 st.session_state["current_view"] = "auth"
                 st.session_state["auth_mode"] = "signup"
                 st.rerun()
-        
         with col_btn2:
             if st.button("View API Documentation", key="api_docs_btn", use_container_width=True):
                 st.markdown(
                     '<script>window.open("https://documenter.getpostman.com", "_blank");</script>',
                     unsafe_allow_html=True,
                 )
-        
-        st.markdown("</div>", unsafe_allow_html=True)
 
-    st.markdown(
-        """
-                </div>
+    st.markdown("</div></div>", unsafe_allow_html=True)
+
+    # 3. Grid Cards & Footer Rendered via components.html
+    landing_features_footer = """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+    <meta charset="UTF-8">
+    <style>
+        :root {
+            --bg-soft: #f3f4f6;
+            --primary-dark: #059669;
+            --dark: #0f172a;
+            --muted: #64748b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: transparent;
+            margin: 0;
+            padding: 0;
+            color: var(--dark);
+        }
+        .feature-grid {
+            max-width: 1200px;
+            margin: 64px auto 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(260px, 1fr));
+            gap: 28px;
+        }
+        .feature-card {
+            background: rgba(255,255,255,0.85);
+            border: 1px solid rgba(148,163,184,0.26);
+            border-radius: 18px;
+            padding: 30px 26px;
+            min-height: 260px;
+            box-shadow: 0 10px 24px rgba(15,23,42,0.04);
+            box-sizing: border-box;
+        }
+        .feature-card .icon {
+            font-size: 3.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 18px;
+        }
+        .feature-card h3 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        .feature-card p {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            color: var(--muted);
+        }
+        .footer-banner {
+            margin-top: 70px;
+            background: linear-gradient(135deg, #0cbf8b 0%, #0d9f7a 100%);
+            color: white;
+            padding: 42px 40px 28px 40px;
+            border-radius: 18px 18px 0 0;
+            box-sizing: border-box;
+        }
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.5fr 0.8fr 0.8fr;
+            gap: 24px;
+        }
+        .footer-brand {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+        .footer-tagline {
+            margin-top: 18px;
+            max-width: 560px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.93);
+        }
+        .footer-column h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 16px;
+        }
+        .footer-column a {
+            display: block;
+            color: white;
+            font-size: 1.05rem;
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        .footer-column a:hover {
+            text-decoration: underline;
+        }
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 24px auto 0 auto;
+            border-top: 1px solid rgba(255,255,255,0.3);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+        .footer-bottom small {
+            font-size: 0.95rem;
+            color: rgba(255,255,255,0.8);
+        }
+        @media (max-width: 900px) {
+            .feature-grid { grid-template-columns: 1fr; }
+            .footer-inner { grid-template-columns: 1fr; }
+        }
+    </style>
+    </head>
+    <body>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="icon">⚕️</div>
+                <h3>ML Forecasting</h3>
+                <p>Trains on historical consumption to map 30-day forward demand trajectories.</p>
             </div>
-
-            <div class="feature-grid">
-                <div class="feature-card">
-                    <div class="icon">⚕️</div>
-                    <h3>ML Forecasting</h3>
-                    <p>Trains on historical consumption to map 30-day forward demand trajectories.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="icon">🛡️</div>
-                    <h3>Lead Time Defense</h3>
-                    <p>Automatically alerts procurement teams before days-to-depletion breaches supplier SLAs.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="icon">🗄️</div>
-                    <h3>Seamless Integration</h3>
-                    <p>Connects directly to your existing inventory database via secure REST API endpoints.</p>
-                </div>
+            <div class="feature-card">
+                <div class="icon">🛡️</div>
+                <h3>Lead Time Defense</h3>
+                <p>Automatically alerts procurement teams before days-to-depletion breaches supplier SLAs.</p>
             </div>
-
-            <div class="footer-banner">
-                <div class="footer-inner">
-                    <div>
-                        <div class="footer-brand">📈 Afya-Stock AI</div>
-                        <div class="footer-tagline">Predictive medical stock-out prevention and intelligent purchase order management. Securing health supply chains with machine learning.</div>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Platform</h4>
-                        <a href="#">Login</a>
-                        <a href="#">Register Account</a>
-                        <a href="#">Dashboard</a>
-                    </div>
-                    <div class="footer-column">
-                        <h4>Developers</h4>
-                        <a href="#">API Documentation</a>
-                        <a href="#">Data Access</a>
-                        <a href="#">Integrations</a>
-                    </div>
-                </div>
-                <div class="footer-bottom">
-                    <small>© 2026 Afya-Stock AI. All rights reserved.</small>
-                    <small>Privacy Policy · Terms of Service</small>
-                </div>
+            <div class="feature-card">
+                <div class="icon">🗄️</div>
+                <h3>Seamless Integration</h3>
+                <p>Connects directly to your existing inventory database via secure REST API endpoints.</p>
             </div>
         </div>
-        """,
-        unsafe_allow_html=True,
-    )
+
+        <div class="footer-banner">
+            <div class="footer-inner">
+                <div>
+                    <div class="footer-brand">📈 Afya-Stock AI</div>
+                    <div class="footer-tagline">Predictive medical stock-out prevention and intelligent purchase order management. Securing health supply chains with machine learning.</div>
+                </div>
+                <div class="footer-column">
+                    <h4>Platform</h4>
+                    <a href="#">Login</a>
+                    <a href="#">Register Account</a>
+                    <a href="#">Dashboard</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Developers</h4>
+                    <a href="#">API Documentation</a>
+                    <a href="#">Data Access</a>
+                    <a href="#">Integrations</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <small>© 2026 Afya-Stock AI. All rights reserved.</small>
+                <small>Privacy Policy · Terms of Service</small>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    
+    components.html(landing_features_footer, height=720, scrolling=False)
+
+
+# def render_landing_page():
+#     st.markdown(
+#         """
+#         <div class="landing-wrap">
+#             <div class="landing-hero">
+#                 <div class="landing-icon">📈</div>
+#                 <div class="landing-title">Predictive <span class="emphasis">Stock-Out</span><br>Prevention</div>
+#                 <div class="landing-subtext">
+#                     Secure your medical supply chain. Our machine learning inference engine analyzes daily demand and supplier lead times to prevent critical shortages before they happen.
+#                 </div>
+#                 <div class="landing-actions">
+#         """,
+#         unsafe_allow_html=True,
+#     )
+
+#     col1, col2, col3 = st.columns([1, 2.2, 1])
+#     with col2:
+#         # Create two buttons side by side with styled divs
+#         st.markdown(
+#             """
+#             <div style="display: flex; gap: 22px; justify-content: center; flex-wrap: wrap;">
+#             """,
+#             unsafe_allow_html=True,
+#         )
+        
+#         col_btn1, col_btn2 = st.columns(2)
+#         with col_btn1:
+#             if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", use_container_width=True):
+#                 st.session_state["current_view"] = "auth"
+#                 st.session_state["auth_mode"] = "signup"
+#                 st.rerun()
+        
+#         with col_btn2:
+#             if st.button("View API Documentation", key="api_docs_btn", use_container_width=True):
+#                 st.markdown(
+#                     '<script>window.open("https://documenter.getpostman.com", "_blank");</script>',
+#                     unsafe_allow_html=True,
+#                 )
+        
+#         st.markdown("</div>", unsafe_allow_html=True)
+
+#     st.markdown(
+#         """
+#                 </div>
+#             </div>
+
+#             <div class="feature-grid">
+#                 <div class="feature-card">
+#                     <div class="icon">⚕️</div>
+#                     <h3>ML Forecasting</h3>
+#                     <p>Trains on historical consumption to map 30-day forward demand trajectories.</p>
+#                 </div>
+#                 <div class="feature-card">
+#                     <div class="icon">🛡️</div>
+#                     <h3>Lead Time Defense</h3>
+#                     <p>Automatically alerts procurement teams before days-to-depletion breaches supplier SLAs.</p>
+#                 </div>
+#                 <div class="feature-card">
+#                     <div class="icon">🗄️</div>
+#                     <h3>Seamless Integration</h3>
+#                     <p>Connects directly to your existing inventory database via secure REST API endpoints.</p>
+#                 </div>
+#             </div>
+
+#             <div class="footer-banner">
+#                 <div class="footer-inner">
+#                     <div>
+#                         <div class="footer-brand">📈 Afya-Stock AI</div>
+#                         <div class="footer-tagline">Predictive medical stock-out prevention and intelligent purchase order management. Securing health supply chains with machine learning.</div>
+#                     </div>
+#                     <div class="footer-column">
+#                         <h4>Platform</h4>
+#                         <a href="#">Login</a>
+#                         <a href="#">Register Account</a>
+#                         <a href="#">Dashboard</a>
+#                     </div>
+#                     <div class="footer-column">
+#                         <h4>Developers</h4>
+#                         <a href="#">API Documentation</a>
+#                         <a href="#">Data Access</a>
+#                         <a href="#">Integrations</a>
+#                     </div>
+#                 </div>
+#                 <div class="footer-bottom">
+#                     <small>© 2026 Afya-Stock AI. All rights reserved.</small>
+#                     <small>Privacy Policy · Terms of Service</small>
+#                 </div>
+#             </div>
+#         </div>
+#         """,
+#         unsafe_allow_html=True,
+#     )
 
 
 def render_auth_page():
