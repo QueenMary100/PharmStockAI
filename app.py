@@ -352,7 +352,7 @@ def render_landing_page():
     st.markdown(
         """
         <div class="landing-wrap" style="padding-bottom: 0px;">
-            <div class="landing-hero" style="padding-top: 20px;">
+            <div class="landing-hero" style="padding-top: 10px;">
                 <div class="landing-icon">📈</div>
                 <div class="landing-title">Predictive <span class="emphasis">Stock-Out</span><br>Prevention</div>
                 <div class="landing-subtext">
@@ -387,16 +387,23 @@ def render_landing_page():
     <style>
         :root {
             --primary: #2563eb;
+            --bg-soft: #f8fafc;
+            --card-bg: rgba(255,255,255,0.92);
             --primary-dark: #1d4ed8;
             --dark: #0f172a;
             --muted: #64748b;
+            --border: #dfe3e8;
+            --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
         }
+        .main { background: var(--bg-soft); }
+        .block-container { padding-top: 2rem !important; } /* Added padding to prevent cutoff */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: transparent;
             margin: 0;
             padding: 0;
             color: var(--dark);
+            overflow-x: hidden;
         }
         .feature-grid {
             max-width: 1200px;
@@ -439,7 +446,10 @@ def render_landing_page():
             padding: 50px 60px 30px 60px;
             width: 100vw;
             position: relative;
-            left: calc(-50vw + 50%);
+            left: 50%;
+            right: 50%;
+            margin-left: -50vw;
+            margin-right: -50vw;
             box-sizing: border-box;
         }
         .footer-inner {
