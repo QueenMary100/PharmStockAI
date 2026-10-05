@@ -208,14 +208,8 @@ if "auth_mode" not in st.session_state:
     st.session_state["auth_mode"] = "signup"
 
 
-def copy_text(text: str):
-    st.markdown(
-        f"<script>navigator.clipboard.writeText({text!r});</script>",
-        unsafe_allow_html=True,
-    )
-
-
 def render_landing_page():
+    # Render the complete landing page HTML
     st.markdown(
         """
         <div class="landing-wrap">
@@ -224,10 +218,6 @@ def render_landing_page():
                 <div class="landing-title">Predictive <span class="emphasis">Stock-Out</span><br>Prevention</div>
                 <div class="landing-subtext">
                     Secure your medical supply chain. Our machine learning inference engine analyzes daily demand and supplier lead times to prevent critical shortages before they happen.
-                </div>
-                <div class="landing-actions">
-                    <button class="action-btn primary" type="button" onclick="document.querySelector('[data-testid=\\'stButton\\']:has-text(\\'Launch Afya-Stock AI\\')').click();">Launch Afya-Stock AI →</button>
-                    <button class="action-btn secondary" type="button" onclick="alert('API docs coming soon.')">View API Documentation</button>
                 </div>
             </div>
 
@@ -278,11 +268,22 @@ def render_landing_page():
         unsafe_allow_html=True,
     )
 
-    # Hidden button to handle launch action
-    if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", label_visibility="collapsed"):
-        st.session_state["current_view"] = "auth"
-        st.session_state["auth_mode"] = "signup"
-        st.rerun()
+    # Action buttons below the HTML
+    st.markdown("---")
+    col1, col2, col3 = st.columns([1, 1, 1])
+    
+    with col1:
+        if st.button("🚀 Launch Afya-Stock AI", use_container_width=True, key="launch_auth_btn"):
+            st.session_state["current_view"] = "auth"
+            st.session_state["auth_mode"] = "signup"
+            st.rerun()
+    
+    with col2:
+        if st.button("📖 View API Docs", use_container_width=True):
+            st.info("API documentation coming soon!")
+    
+    with col3:
+        pass
 
 
 def render_auth_page():
