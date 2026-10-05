@@ -209,8 +209,19 @@ def render_landing_page():
                     Secure your medical supply chain. Our machine learning inference engine analyzes daily demand and supplier lead times to prevent critical shortages before they happen.
                 </div>
                 <div class="landing-actions">
-                    <button class="action-btn primary" type="button" onclick="window.location.reload();">Launch Afya-Stock AI →</button>
-                    <button class="action-btn secondary" type="button" onclick="alert('API docs coming soon.')">View API Documentation</button>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", use_container_width=True):
+            st.session_state["current_view"] = "auth"
+            st.session_state["auth_mode"] = "signup"
+            st.rerun()
+
+    st.markdown(
+        """
                 </div>
             </div>
 
@@ -235,7 +246,7 @@ def render_landing_page():
             <div class="footer-banner">
                 <div class="footer-inner">
                     <div>
-                        <div class="footer-brand">📈 Afya-Stock AI system</div>
+                        <div class="footer-brand">📈 Afya-Stock AI</div>
                         <div class="footer-tagline">Predictive medical stock-out prevention and intelligent purchase order management. Securing health supply chains with machine learning.</div>
                     </div>
                     <div class="footer-column">
@@ -260,11 +271,6 @@ def render_landing_page():
         """,
         unsafe_allow_html=True,
     )
-
-    if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", use_container_width=True):
-        st.session_state["current_view"] = "auth"
-        st.session_state["auth_mode"] = "signup"
-        st.rerun()
 
 
 def render_auth_page():
@@ -511,7 +517,7 @@ def render_dashboard():
                 .kpi-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid #10b981; }
                 .kpi-card h3 { margin: 0; color: #64748b; font-size: 0.85rem; text-transform: uppercase; }
                 .kpi-card p { margin: 10px 0 0; font-size: 1.6rem; font-weight: bold; color: #0f172a; }
-                .chart-section { grid-column: span 2; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; min-height: 380px; }
+                .chart-section { grid-column: span 2; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; min-height: 0; }
                 .chart-wide { grid-column: span 4; }
                 .chart-header { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #0f172a; }
                 .canvas-wrapper { position: relative; flex-grow: 1; min-height: 0; width: 100%; }
