@@ -15,16 +15,14 @@ st.markdown(
     """
     <style>
     :root {
-        --bg-soft: #f5f7fb;
+        --bg-soft: #f3f4f6;
         --card-bg: rgba(255,255,255,0.92);
-        --primary: #6d5efc;
-        --primary-dark: #4f46e5;
-        --accent: #f59e0b;
-        --accent-soft: #fff7ed;
+        --primary: #10b981;
+        --primary-dark: #059669;
         --dark: #0f172a;
         --muted: #64748b;
-        --border: #e2e8f0;
-        --shadow: 0 20px 45px rgba(79, 70, 229, 0.12);
+        --border: #dfe3e8;
+        --shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
     }
 
     .main { background: var(--bg-soft); }
@@ -50,10 +48,10 @@ st.markdown(
         padding: 0;
     }
     .auth-logo {
-        width: 90px; height: 90px; border-radius: 50%; background: rgba(109, 94, 252, 0.12);
+        width: 90px; height: 90px; border-radius: 50%; background: #dff7ee;
         display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
         color: var(--primary-dark); margin: 0 auto 18px auto;
-        border: 1px solid rgba(109, 94, 252, 0.18);
+        border: 1px solid rgba(16, 185, 129, 0.15);
     }
     .auth-title {
         text-align: center; font-size: clamp(2.2rem, 3vw, 3rem); font-weight: 800; letter-spacing: -0.04em;
@@ -81,7 +79,7 @@ st.markdown(
     }
     .auth-input input:focus {
         border-color: var(--primary) !important;
-        box-shadow: 0 0 0 3px rgba(109, 94, 252, 0.12) !important;
+        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12) !important;
     }
     .primary-btn {
         width: 100%; height: 54px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -98,7 +96,7 @@ st.markdown(
 
     /* landing page */
     .landing-wrap {
-        background: linear-gradient(180deg, #f3f4f6 0%, #eef2ff 100%);
+        background: linear-gradient(180deg, #f3f4f6 0%, #eaeef3 100%);
         min-height: 100vh;
         padding: 0 20px 0 20px;
     }
@@ -107,8 +105,8 @@ st.markdown(
     }
     .landing-icon {
         width: 120px; height: 120px; margin: 0 auto 26px auto; border-radius: 26px;
-        background: rgba(109,94,252,0.12); display: flex; align-items: center; justify-content: center;
-        color: var(--primary-dark); border: 1px solid rgba(109,94,252,0.2);
+        background: rgba(16,185,129,0.14); display: flex; align-items: center; justify-content: center;
+        color: var(--primary-dark); border: 1px solid rgba(16,185,129,0.2);
         font-size: 4rem;
     }
     .landing-title {
@@ -140,7 +138,7 @@ st.markdown(
     .feature-card p { font-size: 1.08rem; line-height: 1.6; color: var(--muted); }
 
     .footer-banner {
-        margin-top: 70px; background: linear-gradient(135deg, #5b4cf0 0%, #4338ca 100%); color: white; padding: 42px 40px 28px 40px;
+        margin-top: 70px; background: linear-gradient(135deg, #0cbf8b 0%, #0d9f7a 100%); color: white; padding: 42px 40px 28px 40px;
     }
     .footer-inner {
         max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr; gap: 24px;
@@ -164,32 +162,17 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
-def get_supabase_credentials():
-    try:
-        url = st.secrets["SUPABASE_URL"]
-        key = st.secrets["SUPABASE_KEY"]
-        if url and key:
-            return url, key
-    except Exception:
-        pass
-
-    url = os.getenv("SUPABASE_URL")
-    key = os.getenv("SUPABASE_KEY")
-    if url and key:
-        return url, key
-
-    return None, None
-
-
-SUPABASE_URL, SUPABASE_KEY = get_supabase_credentials()
+# Initialize Supabase Client from Streamlit Secrets
+try:
+    SUPABASE_URL = st.secrets["SUPABASE_URL"]
+    SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+except KeyError:
+    st.error("❌ Supabase credentials not found in secrets. Please configure them in Streamlit Cloud settings.")
+    st.stop()
 
 
 @st.cache_resource
 def init_supabase():
-    if not SUPABASE_URL or not SUPABASE_KEY:
-        return None
-
     try:
         return create_client(SUPABASE_URL, SUPABASE_KEY)
     except Exception as e:
@@ -285,14 +268,6 @@ def render_landing_page():
 
 
 def render_auth_page():
-    if supabase_client is None:
-        st.warning("⚠️ Authentication is currently unavailable because Supabase credentials are missing or invalid.")
-        if st.button("Continue to Dashboard", key="demo_dashboard_btn"):
-            st.session_state["user_session"] = {"email": "demo@pharmstock.ai"}
-            st.session_state["current_view"] = "dashboard"
-            st.rerun()
-        return
-
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
         st.markdown('<div class="auth-shell">', unsafe_allow_html=True)
@@ -319,9 +294,12 @@ def render_auth_page():
                 email = st.text_input("Email Address", key="signup_email")
                 password = st.text_input("Password", type="password", key="signup_password")
                 st.markdown('</div>', unsafe_allow_html=True)
-                if st.form_submit_button("Register", use_container_width=True):
+                submit_label = "Register"
+                if st.form_submit_button(submit_label, use_container_width=True):
                     if not full_name or not email or not password:
                         st.error("Please complete all required fields.")
+                    elif not supabase_client:
+                        st.error("Supabase client is not configured correctly.")
                     else:
                         try:
                             response = supabase_client.auth.sign_up({
@@ -353,6 +331,8 @@ def render_auth_page():
                 if st.form_submit_button("Sign In", use_container_width=True):
                     if not email or not password:
                         st.error("Please enter your email and password.")
+                    elif not supabase_client:
+                        st.error("Supabase client is not configured correctly.")
                     else:
                         try:
                             response = supabase_client.auth.sign_in_with_password({
@@ -368,7 +348,7 @@ def render_auth_page():
 
         if st.session_state["auth_mode"] == "signup":
             st.markdown(
-                "<div class='auth-footer'>Already have an account? <a href='#' onclick=\"document.querySelector('[data-testid=\\'stButton\\']')\" style='cursor:pointer'>Sign In</a></div>",
+                "<div class='auth-footer'>Already have an account? <a href='#' onclick=\"document.querySelector('[data-testid=\'stButton\']')\" style='cursor:pointer'>Sign In</a></div>",
                 unsafe_allow_html=True,
             )
             if st.button("Sign In", key="switch_signin_btn", use_container_width=True):
@@ -406,12 +386,6 @@ def load_assets():
 
 
 def render_dashboard():
-    current_user = st.session_state.get("user_session")
-    if current_user is None:
-        st.session_state["current_view"] = "landing"
-        st.rerun()
-        return
-
     model, df = load_assets()
 
     if model is None or df is None:
@@ -421,8 +395,7 @@ def render_dashboard():
         st.stop()
 
     st.sidebar.title("🛡️ PharmStock AI")
-    user_email = getattr(current_user, "email", None) or current_user.get("email", "demo@pharmstock.ai")
-    st.sidebar.write(f"Logged in as: **{user_email}**")
+    st.sidebar.write(f"Logged in as: **{st.session_state['user_session'].email}**")
     if st.sidebar.button("🚪 Log Out"):
         st.session_state["user_session"] = None
         st.session_state["current_view"] = "landing"
@@ -484,10 +457,10 @@ def render_dashboard():
             pred = max(0.0, model.predict(features)[0])
             st.markdown(
                 f"""
-                <div style='background-color: white; padding: 30px; border-radius: 12px; border-left: 10px solid #6d5efc; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);'>
-                    <h3 style='margin:0; color:#6d5efc;'>📊 System Prediction: {pred:.2f} Units</h3>
+                <div style='background-color: white; padding: 30px; border-radius: 12px; border-left: 10px solid #10b981; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);'>
+                    <h3 style='margin:0; color:#10b981;'>📊 System Prediction: {pred:.2f} Units</h3>
                     <p style='color:#64748b; margin: 5px 0 0 0;'>Calculated demand projection for {target_date.strftime('%B %Y')}</p>
-                    <p style='color:#f59e0b; margin: 10px 0 0 0; font-size: 0.9rem;'>✓ Forecast generated successfully</p>
+                    <p style='color:#10b981; margin: 10px 0 0 0; font-size: 0.9rem;'>✓ Forecast generated successfully</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -535,10 +508,10 @@ def render_dashboard():
             <style>
                 body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; margin: 0; padding: 10px; color: #333; }
                 .dashboard-container { display: grid; grid-template-columns: repeat(4, 1fr); grid-gap: 20px; }
-                .kpi-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid #6d5efc; }
+                .kpi-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid #10b981; }
                 .kpi-card h3 { margin: 0; color: #64748b; font-size: 0.85rem; text-transform: uppercase; }
                 .kpi-card p { margin: 10px 0 0; font-size: 1.6rem; font-weight: bold; color: #0f172a; }
-                .chart-section { grid-column: span 2; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; min-height: 340px; }
+                .chart-section { grid-column: span 2; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; min-height: 380px; }
                 .chart-wide { grid-column: span 4; }
                 .chart-header { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #0f172a; }
                 .canvas-wrapper { position: relative; flex-grow: 1; min-height: 0; width: 100%; }
@@ -584,13 +557,13 @@ def render_dashboard():
                             datasets: [{
                                 label: 'Sales Value',
                                 data: rawData.map(d => d.sales_value),
-                                backgroundColor: 'rgba(109, 94, 252, 0.7)',
+                                backgroundColor: 'rgba(16, 185, 129, 0.7)',
                                 yAxisID: 'y'
                             }, {
                                 label: 'Sales Qty',
                                 data: rawData.map(d => d.sales_qty),
                                 type: 'line',
-                                borderColor: '#f59e0b',
+                                borderColor: '#ef4444',
                                 borderWidth: 3,
                                 fill: false,
                                 yAxisID: 'y1'
@@ -613,7 +586,7 @@ def render_dashboard():
                             datasets: [{
                                 label: 'Avg Opening Stock',
                                 data: rawData.map(d => d.op_stock_avg),
-                                backgroundColor: '#6d5efc'
+                                backgroundColor: '#10b981'
                             }, {
                                 label: 'Avg Closing Stock',
                                 data: rawData.map(d => d.cls_stock_avg),
@@ -658,7 +631,7 @@ def render_dashboard():
 
 
 # Main app flow
-if st.session_state.get("user_session"):
+if st.session_state["user_session"]:
     render_dashboard()
 else:
     if st.session_state["current_view"] == "auth":
