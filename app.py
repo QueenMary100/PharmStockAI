@@ -122,10 +122,13 @@ st.markdown(
     }
     .action-btn {
         display: inline-flex; align-items: center; justify-content: center; min-width: 280px; min-height: 70px;
-        border-radius: 18px; font-size: 1.1rem; font-weight: 700; border: none; cursor: pointer;
+        border-radius: 18px; font-size: 1.1rem; font-weight: 700; border: none; cursor: pointer; text-decoration: none;
+        transition: all 0.3s ease;
     }
     .action-btn.primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; }
+    .action-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(16, 185, 129, 0.3); }
     .action-btn.secondary { background: rgba(255,255,255,0.7); border: 1px solid rgba(15,23,42,0.08); color: var(--dark); }
+    .action-btn.secondary:hover { background: rgba(255,255,255,0.85); transform: translateY(-2px); box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1); }
     .feature-grid {
         max-width: 1200px; margin: 64px auto 0 auto; display: grid; grid-template-columns: repeat(3, minmax(260px, 1fr)); gap: 28px;
     }
@@ -213,12 +216,31 @@ def render_landing_page():
         unsafe_allow_html=True,
     )
 
-    col1, col2, col3 = st.columns([1, 2, 1])
+    col1, col2, col3 = st.columns([1, 2.2, 1])
     with col2:
-        if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", use_container_width=True):
-            st.session_state["current_view"] = "auth"
-            st.session_state["auth_mode"] = "signup"
-            st.rerun()
+        # Create two buttons side by side with styled divs
+        st.markdown(
+            """
+            <div style="display: flex; gap: 22px; justify-content: center; flex-wrap: wrap;">
+            """,
+            unsafe_allow_html=True,
+        )
+        
+        col_btn1, col_btn2 = st.columns(2)
+        with col_btn1:
+            if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", use_container_width=True):
+                st.session_state["current_view"] = "auth"
+                st.session_state["auth_mode"] = "signup"
+                st.rerun()
+        
+        with col_btn2:
+            if st.button("View API Documentation", key="api_docs_btn", use_container_width=True):
+                st.markdown(
+                    '<script>window.open("https://documenter.getpostman.com", "_blank");</script>',
+                    unsafe_allow_html=True,
+                )
+        
+        st.markdown("</div>", unsafe_allow_html=True)
 
     st.markdown(
         """
@@ -517,7 +539,7 @@ def render_dashboard():
                 .kpi-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid #10b981; }
                 .kpi-card h3 { margin: 0; color: #64748b; font-size: 0.85rem; text-transform: uppercase; }
                 .kpi-card p { margin: 10px 0 0; font-size: 1.6rem; font-weight: bold; color: #0f172a; }
-                .chart-section { grid-column: span 2; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; min-height: 0; }
+                .chart-section { grid-column: span 2; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; min-height: 400px; }
                 .chart-wide { grid-column: span 4; }
                 .chart-header { font-weight: bold; margin-bottom: 15px; font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #0f172a; }
                 .canvas-wrapper { position: relative; flex-grow: 1; min-height: 0; width: 100%; }
