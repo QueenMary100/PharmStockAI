@@ -235,7 +235,7 @@ def render_landing_page():
             <div class="footer-banner">
                 <div class="footer-inner">
                     <div>
-                        <div class="footer-brand">📈 Afya-Stock AI</div>
+                        <div class="footer-brand">📈 Afya-Stock AI system</div>
                         <div class="footer-tagline">Predictive medical stock-out prevention and intelligent purchase order management. Securing health supply chains with machine learning.</div>
                     </div>
                     <div class="footer-column">
