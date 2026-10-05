@@ -8,17 +8,17 @@ import streamlit.components.v1 as components
 from supabase import create_client
 
 # Page configuration for a professional look
-st.set_page_config(page_title="PharmStock AI", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Pharm-Stock System", layout="wide", initial_sidebar_state="collapsed")
 
-# Global styling to match the requested glassy/modern design
+# Global styling matching professional blue theme
 st.markdown(
     """
     <style>
     :root {
-        --bg-soft: #f3f4f6;
+        --bg-soft: #f8fafc;
         --card-bg: rgba(255,255,255,0.92);
-        --primary: #10b981;
-        --primary-dark: #059669;
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
         --dark: #0f172a;
         --muted: #64748b;
         --border: #dfe3e8;
@@ -48,10 +48,10 @@ st.markdown(
         padding: 0;
     }
     .auth-logo {
-        width: 90px; height: 90px; border-radius: 50%; background: #dff7ee;
+        width: 90px; height: 90px; border-radius: 50%; background: #dbeafe;
         display: flex; align-items: center; justify-content: center; font-size: 2.2rem;
         color: var(--primary-dark); margin: 0 auto 18px auto;
-        border: 1px solid rgba(16, 185, 129, 0.15);
+        border: 1px solid rgba(37, 99, 235, 0.15);
     }
     .auth-title {
         text-align: center; font-size: clamp(2.2rem, 3vw, 3rem); font-weight: 800; letter-spacing: -0.04em;
@@ -79,7 +79,7 @@ st.markdown(
     }
     .auth-input input:focus {
         border-color: var(--primary) !important;
-        box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12) !important;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12) !important;
     }
     .primary-btn {
         width: 100%; height: 54px; border: none; border-radius: 12px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -96,7 +96,7 @@ st.markdown(
 
     /* landing page */
     .landing-wrap {
-        background: linear-gradient(180deg, #f3f4f6 0%, #eaeef3 100%);
+        background: linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
         min-height: 100vh;
         padding: 0 20px 0 20px;
     }
@@ -105,60 +105,17 @@ st.markdown(
     }
     .landing-icon {
         width: 120px; height: 120px; margin: 0 auto 26px auto; border-radius: 26px;
-        background: rgba(16,185,129,0.14); display: flex; align-items: center; justify-content: center;
-        color: var(--primary-dark); border: 1px solid rgba(16,185,129,0.2);
+        background: rgba(37,99,235,0.1); display: flex; align-items: center; justify-content: center;
+        color: var(--primary-dark); border: 1px solid rgba(37,99,235,0.2);
         font-size: 4rem;
     }
     .landing-title {
         font-size: clamp(3rem, 5vw, 7rem); line-height: 0.95; font-weight: 900; color: var(--dark); letter-spacing: -0.06em;
     }
-    .landing-title .emphasis { color: var(--primary-dark); }
+    .landing-title .emphasis { color: var(--primary); }
     .landing-subtext {
         max-width: 900px; margin: 28px auto 0 auto; font-size: clamp(1.35rem, 2vw, 2.1rem);
         line-height: 1.45; color: #1e293b; font-weight: 500; letter-spacing: -0.03em;
-    }
-    .landing-actions {
-        max-width: 760px; margin: 40px auto 0 auto; display: flex; gap: 22px; justify-content: center; flex-wrap: wrap;
-    }
-    .action-btn {
-        display: inline-flex; align-items: center; justify-content: center; min-width: 280px; min-height: 70px;
-        border-radius: 18px; font-size: 1.1rem; font-weight: 700; border: none; cursor: pointer; text-decoration: none;
-        transition: all 0.3s ease;
-    }
-    .action-btn.primary { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: white; }
-    .action-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 12px 24px rgba(16, 185, 129, 0.3); }
-    .action-btn.secondary { background: rgba(255,255,255,0.7); border: 1px solid rgba(15,23,42,0.08); color: var(--dark); }
-    .action-btn.secondary:hover { background: rgba(255,255,255,0.85); transform: translateY(-2px); box-shadow: 0 8px 16px rgba(15, 23, 42, 0.1); }
-    .feature-grid {
-        max-width: 1200px; margin: 64px auto 0 auto; display: grid; grid-template-columns: repeat(3, minmax(260px, 1fr)); gap: 28px;
-    }
-    .feature-card {
-        background: rgba(255,255,255,0.68); border: 1px solid rgba(148,163,184,0.26); border-radius: 18px;
-        padding: 30px 26px; min-height: 260px; box-shadow: 0 10px 24px rgba(15,23,42,0.04);
-    }
-    .feature-card .icon { font-size: 3.2rem; color: var(--primary-dark); margin-bottom: 18px; }
-    .feature-card h3 { font-size: 2rem; font-weight: 800; line-height: 1.2; margin-bottom: 10px; color: var(--dark); }
-    .feature-card p { font-size: 1.08rem; line-height: 1.6; color: var(--muted); }
-
-    .footer-banner {
-        margin-top: 70px; background: linear-gradient(135deg, #0cbf8b 0%, #0d9f7a 100%); color: white; padding: 42px 40px 28px 40px;
-    }
-    .footer-inner {
-        max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 0.8fr 0.8fr; gap: 24px;
-    }
-    .footer-brand { font-size: 2.2rem; font-weight: 800; letter-spacing: -0.04em; }
-    .footer-tagline { margin-top: 18px; max-width: 560px; font-size: 1.15rem; line-height: 1.6; color: rgba(255,255,255,0.93); }
-    .footer-column h4 { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.18em; color: rgba(255,255,255,0.8); margin-bottom: 16px; }
-    .footer-column a { display: block; color: white; font-size: 1.1rem; text-decoration: none; margin-bottom: 10px; }
-    .footer-bottom {
-        max-width: 1200px; margin: 0 auto; border-top: 1px solid rgba(255,255,255,0.3); padding-top: 20px; margin-top: 24px;
-        display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap;
-    }
-    .footer-bottom small { font-size: 0.96rem; color: rgba(255,255,255,0.8); }
-
-    @media (max-width: 900px) {
-        .feature-grid { grid-template-columns: 1fr; }
-        .footer-inner { grid-template-columns: 1fr; }
     }
     </style>
     """,
@@ -194,14 +151,7 @@ if "auth_mode" not in st.session_state:
     st.session_state["auth_mode"] = "signup"
 
 
-def copy_text(text: str):
-    st.markdown(
-        f"<script>navigator.clipboard.writeText({text!r});</script>",
-        unsafe_allow_html=True,
-    )
-
 def render_landing_page():
-    # 1. Hero Section & Title
     st.markdown(
         """
         <div class="landing-wrap">
@@ -215,12 +165,11 @@ def render_landing_page():
         unsafe_allow_html=True,
     )
 
-    # 2. Native Streamlit Action Buttons
     col1, col2, col3 = st.columns([1, 2.2, 1])
     with col2:
         col_btn1, col_btn2 = st.columns(2)
         with col_btn1:
-            if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", use_container_width=True):
+            if st.button("Launch Pharm-Stock System →", key="launch_auth_btn", use_container_width=True):
                 st.session_state["current_view"] = "auth"
                 st.session_state["auth_mode"] = "signup"
                 st.rerun()
@@ -233,7 +182,6 @@ def render_landing_page():
 
     st.markdown("</div></div>", unsafe_allow_html=True)
 
-    # 3. Grid Cards & Footer Rendered via components.html
     landing_features_footer = """
     <!DOCTYPE html>
     <html lang="en">
@@ -241,8 +189,8 @@ def render_landing_page():
     <meta charset="UTF-8">
     <style>
         :root {
-            --bg-soft: #f3f4f6;
-            --primary-dark: #059669;
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
             --dark: #0f172a;
             --muted: #64748b;
         }
@@ -271,7 +219,7 @@ def render_landing_page():
         }
         .feature-card .icon {
             font-size: 3.2rem;
-            color: var(--primary-dark);
+            color: var(--primary);
             margin-bottom: 18px;
         }
         .feature-card h3 {
@@ -288,7 +236,7 @@ def render_landing_page():
         }
         .footer-banner {
             margin-top: 70px;
-            background: linear-gradient(135deg, #0cbf8b 0%, #0d9f7a 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
             color: white;
             padding: 42px 40px 28px 40px;
             border-radius: 18px 18px 0 0;
@@ -354,7 +302,7 @@ def render_landing_page():
     <body>
         <div class="feature-grid">
             <div class="feature-card">
-                <div class="icon">⚕️</div>
+                <div class="icon">⚕️️</div>
                 <h3>ML Forecasting</h3>
                 <p>Trains on historical consumption to map 30-day forward demand trajectories.</p>
             </div>
@@ -373,7 +321,7 @@ def render_landing_page():
         <div class="footer-banner">
             <div class="footer-inner">
                 <div>
-                    <div class="footer-brand">📈 Afya-Stock AI</div>
+                    <div class="footer-brand">📈 Pharm-Stock System</div>
                     <div class="footer-tagline">Predictive medical stock-out prevention and intelligent purchase order management. Securing health supply chains with machine learning.</div>
                 </div>
                 <div class="footer-column">
@@ -390,7 +338,7 @@ def render_landing_page():
                 </div>
             </div>
             <div class="footer-bottom">
-                <small>© 2026 Afya-Stock AI. All rights reserved.</small>
+                <small>© 2026 Pharm-Stock System. All rights reserved.</small>
                 <small>Privacy Policy · Terms of Service</small>
             </div>
         </div>
@@ -399,100 +347,6 @@ def render_landing_page():
     """
     
     components.html(landing_features_footer, height=720, scrolling=False)
-
-
-# def render_landing_page():
-#     st.markdown(
-#         """
-#         <div class="landing-wrap">
-#             <div class="landing-hero">
-#                 <div class="landing-icon">📈</div>
-#                 <div class="landing-title">Predictive <span class="emphasis">Stock-Out</span><br>Prevention</div>
-#                 <div class="landing-subtext">
-#                     Secure your medical supply chain. Our machine learning inference engine analyzes daily demand and supplier lead times to prevent critical shortages before they happen.
-#                 </div>
-#                 <div class="landing-actions">
-#         """,
-#         unsafe_allow_html=True,
-#     )
-
-#     col1, col2, col3 = st.columns([1, 2.2, 1])
-#     with col2:
-#         # Create two buttons side by side with styled divs
-#         st.markdown(
-#             """
-#             <div style="display: flex; gap: 22px; justify-content: center; flex-wrap: wrap;">
-#             """,
-#             unsafe_allow_html=True,
-#         )
-        
-#         col_btn1, col_btn2 = st.columns(2)
-#         with col_btn1:
-#             if st.button("Launch Afya-Stock AI →", key="launch_auth_btn", use_container_width=True):
-#                 st.session_state["current_view"] = "auth"
-#                 st.session_state["auth_mode"] = "signup"
-#                 st.rerun()
-        
-#         with col_btn2:
-#             if st.button("View API Documentation", key="api_docs_btn", use_container_width=True):
-#                 st.markdown(
-#                     '<script>window.open("https://documenter.getpostman.com", "_blank");</script>',
-#                     unsafe_allow_html=True,
-#                 )
-        
-#         st.markdown("</div>", unsafe_allow_html=True)
-
-#     st.markdown(
-#         """
-#                 </div>
-#             </div>
-
-#             <div class="feature-grid">
-#                 <div class="feature-card">
-#                     <div class="icon">⚕️</div>
-#                     <h3>ML Forecasting</h3>
-#                     <p>Trains on historical consumption to map 30-day forward demand trajectories.</p>
-#                 </div>
-#                 <div class="feature-card">
-#                     <div class="icon">🛡️</div>
-#                     <h3>Lead Time Defense</h3>
-#                     <p>Automatically alerts procurement teams before days-to-depletion breaches supplier SLAs.</p>
-#                 </div>
-#                 <div class="feature-card">
-#                     <div class="icon">🗄️</div>
-#                     <h3>Seamless Integration</h3>
-#                     <p>Connects directly to your existing inventory database via secure REST API endpoints.</p>
-#                 </div>
-#             </div>
-
-#             <div class="footer-banner">
-#                 <div class="footer-inner">
-#                     <div>
-#                         <div class="footer-brand">📈 Afya-Stock AI</div>
-#                         <div class="footer-tagline">Predictive medical stock-out prevention and intelligent purchase order management. Securing health supply chains with machine learning.</div>
-#                     </div>
-#                     <div class="footer-column">
-#                         <h4>Platform</h4>
-#                         <a href="#">Login</a>
-#                         <a href="#">Register Account</a>
-#                         <a href="#">Dashboard</a>
-#                     </div>
-#                     <div class="footer-column">
-#                         <h4>Developers</h4>
-#                         <a href="#">API Documentation</a>
-#                         <a href="#">Data Access</a>
-#                         <a href="#">Integrations</a>
-#                     </div>
-#                 </div>
-#                 <div class="footer-bottom">
-#                     <small>© 2026 Afya-Stock AI. All rights reserved.</small>
-#                     <small>Privacy Policy · Terms of Service</small>
-#                 </div>
-#             </div>
-#         </div>
-#         """,
-#         unsafe_allow_html=True,
-#     )
 
 
 def render_auth_page():
@@ -510,10 +364,10 @@ def render_auth_page():
 
         if st.session_state["auth_mode"] == "signup":
             st.markdown('<div class="auth-title">Create Account</div>', unsafe_allow_html=True)
-            st.markdown('<div class="auth-subtitle">Register to access Afya-Stock AI</div>', unsafe_allow_html=True)
+            st.markdown('<div class="auth-subtitle">Register to access Pharm-Stock System</div>', unsafe_allow_html=True)
         else:
             st.markdown('<div class="auth-title">Welcome Back</div>', unsafe_allow_html=True)
-            st.markdown('<div class="auth-subtitle">Sign in to access Afya-Stock AI</div>', unsafe_allow_html=True)
+            st.markdown('<div class="auth-subtitle">Sign in to access Pharm-Stock System</div>', unsafe_allow_html=True)
 
         with st.form(key="auth_form"):
             if st.session_state["auth_mode"] == "signup":
@@ -575,19 +429,11 @@ def render_auth_page():
                             st.error(f"❌ Login failed: {str(e)}")
 
         if st.session_state["auth_mode"] == "signup":
-            st.markdown(
-                "<div class='auth-footer'>Already have an account? <a href='#' onclick=\"document.querySelector('[data-testid=\'stButton\']')\" style='cursor:pointer'>Sign In</a></div>",
-                unsafe_allow_html=True,
-            )
-            if st.button("Sign In", key="switch_signin_btn", use_container_width=True):
+            if st.button("Sign In instead", key="switch_signin_btn", use_container_width=True):
                 st.session_state["auth_mode"] = "signin"
                 st.rerun()
         else:
-            st.markdown(
-                "<div class='auth-footer'>Need an account? <a href='#'>Create One</a></div>",
-                unsafe_allow_html=True,
-            )
-            if st.button("Create Account", key="switch_signup_btn", use_container_width=True):
+            if st.button("Create Account instead", key="switch_signup_btn", use_container_width=True):
                 st.session_state["auth_mode"] = "signup"
                 st.rerun()
 
@@ -622,7 +468,7 @@ def render_dashboard():
         st.error("📋 - streamlit_pharm_data.csv")
         st.stop()
 
-    st.sidebar.title("🛡️ PharmStock AI")
+    st.sidebar.title("🛡️ Pharm-Stock System")
     st.sidebar.write(f"Logged in as: **{st.session_state['user_session'].email}**")
     if st.sidebar.button("🚪 Log Out"):
         st.session_state["user_session"] = None
@@ -685,10 +531,10 @@ def render_dashboard():
             pred = max(0.0, model.predict(features)[0])
             st.markdown(
                 f"""
-                <div style='background-color: white; padding: 30px; border-radius: 12px; border-left: 10px solid #10b981; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);'>
-                    <h3 style='margin:0; color:#10b981;'>📊 System Prediction: {pred:.2f} Units</h3>
+                <div style='background-color: white; padding: 30px; border-radius: 12px; border-left: 10px solid #2563eb; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);'>
+                    <h3 style='margin:0; color:#2563eb;'>📊 System Prediction: {pred:.2f} Units</h3>
                     <p style='color:#64748b; margin: 5px 0 0 0;'>Calculated demand projection for {target_date.strftime('%B %Y')}</p>
-                    <p style='color:#10b981; margin: 10px 0 0 0; font-size: 0.9rem;'>✓ Forecast generated successfully</p>
+                    <p style='color:#2563eb; margin: 10px 0 0 0; font-size: 0.9rem;'>✓ Forecast generated successfully</p>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -736,7 +582,7 @@ def render_dashboard():
             <style>
                 body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f8fafc; margin: 0; padding: 10px; color: #333; }
                 .dashboard-container { display: grid; grid-template-columns: repeat(4, 1fr); grid-gap: 20px; }
-                .kpi-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid #10b981; }
+                .kpi-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; border-top: 4px solid #2563eb; }
                 .kpi-card h3 { margin: 0; color: #64748b; font-size: 0.85rem; text-transform: uppercase; }
                 .kpi-card p { margin: 10px 0 0; font-size: 1.6rem; font-weight: bold; color: #0f172a; }
                 .chart-section { grid-column: span 2; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: flex; flex-direction: column; min-height: 400px; }
@@ -785,13 +631,13 @@ def render_dashboard():
                             datasets: [{
                                 label: 'Sales Value',
                                 data: rawData.map(d => d.sales_value),
-                                backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                                backgroundColor: 'rgba(37, 99, 235, 0.7)',
                                 yAxisID: 'y'
                             }, {
                                 label: 'Sales Qty',
                                 data: rawData.map(d => d.sales_qty),
                                 type: 'line',
-                                borderColor: '#ef4444',
+                                borderColor: '#f59e0b',
                                 borderWidth: 3,
                                 fill: false,
                                 yAxisID: 'y1'
@@ -814,11 +660,11 @@ def render_dashboard():
                             datasets: [{
                                 label: 'Avg Opening Stock',
                                 data: rawData.map(d => d.op_stock_avg),
-                                backgroundColor: '#10b981'
+                                backgroundColor: '#2563eb'
                             }, {
                                 label: 'Avg Closing Stock',
                                 data: rawData.map(d => d.cls_stock_avg),
-                                backgroundColor: '#f59e0b'
+                                backgroundColor: '#10b981'
                             }]
                         },
                         options: {
