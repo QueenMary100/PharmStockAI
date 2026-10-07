@@ -99,7 +99,7 @@ st.markdown(
     /* landing page */
     .landing-wrap {
         background: linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
-        min-height: 100vh;
+        min-height: 60vh;
         padding: 0 20px 0 20px;
     }
     .landing-hero {
